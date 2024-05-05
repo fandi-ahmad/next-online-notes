@@ -6,9 +6,9 @@ import BaseButton from "@/components/BaseButton";
 import BaseInput from "@/components/BaseInput";
 import BaseCard from "@/components/BaseCard";
 import { Backdrop, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
-import { CheckUserApi } from "@/api/authApi";
-import { useRouter } from "next/navigation";
 import LoadingScreen from "@/components/LoadingScreen";
+import CheckUserLogin from "@/components/CheckUserLogin";
+import { useGlobalState } from "@/lib/state";
 
 interface iNote {
   id: number,
@@ -23,8 +23,7 @@ export default function Home() {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
   const [isOpenBackdrop, setIsOpenBackdrop] = useState<boolean>(false)
   const [idDeleted, setIdDeleted] = useState<number>(NaN)
-  const [isLoadingScreen, setIsLoadingScreen] = useState<boolean>(true)
-  const router = useRouter()
+  const [isLoadingScreen, setIsLoadingScreen] = useGlobalState('isLoadingScreen')
 
   const getAllNotes = async () => {
     const result = await GetNoteApi()
@@ -55,22 +54,13 @@ export default function Home() {
     setIdDeleted(NaN)
   };
 
-  const checkUser = async () => {
-    const response = await CheckUserApi()
-    if (response.status === 401 || response.status === 403) {
-      router.push('/login')
-    } else {
-      setIsLoadingScreen(false)
-      getAllNotes()
-    }
-  }
-
   useEffect(() => {
-    checkUser()
-  }, [])
+    if (!isLoadingScreen) getAllNotes()
+  }, [isLoadingScreen])
 
   return (
     <>
+      <CheckUserLogin/>
       {isLoadingScreen ? <LoadingScreen/> : null}
 
       <div className="w-full mb-4 flex justify-between">
