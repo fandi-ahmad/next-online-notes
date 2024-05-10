@@ -17,6 +17,7 @@
 /build
 .env
 .vscode
+public/images/*
 
 # misc
 .DS_Store
