@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Image from "next/image";
-import Link from "next/link";
+import Navbar from "@/components/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,19 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <div className="bg-gray-200 w-100 min-h-screen px-8 md:px-16 xl:px-48 py-6">
-          <div className="flex justify-between items-center mb-4">
-            <Link href={'/'}>
-              <h1 className="text-xl font-semibold text-gray-800">Online Notes</h1>
-            </Link>
-            <Image
-              src='/profile-picture.png'
-              alt="profile-picture"
-              className="rounded-full"
-              width={48}
-              height={48}
-              priority
-            />
-          </div>
+          <Navbar/>
           {children}
         </div>
       </body>

@@ -2,7 +2,20 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+First you must install node js. Duplicate and rename the `.env` file, for example with the username `root` and the database name is `next-online-notes` as below.
+
+| key                     | value                         |
+| :---------------------- | :---------------------------- |
+| `DATABASE_URL`          | mysql://root:@localhost:3306/next-online-notes              |
+
+Now that run the command below.
+
+```bash
+npm install
+npx prisma generate
+```
+
+Run the development server:
 
 ```bash
 npm run dev
