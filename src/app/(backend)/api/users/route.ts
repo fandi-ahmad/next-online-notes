@@ -55,8 +55,8 @@ export async function PUT(req: { formData: () => any }, res: any) {
     if (profile_picture) {
       const filename = profile_picture.name.replaceAll(" ", "_");
       const newFilename = `${Date.now()}_${filename}`;
-      const filePath = path.join(process.cwd(), 'public/images/', newFilename)
-      const filePathInPublic = '/images/' + newFilename
+      const filePath = path.join(process.cwd(), 'public/profile-picture/', newFilename)
+      const filePathInPublic = '/profile-picture/' + newFilename
     
       // Convert the file data to a Buffer
       const buffer = Buffer.from(await profile_picture.arrayBuffer());
@@ -88,7 +88,6 @@ export async function PUT(req: { formData: () => any }, res: any) {
       })
     }
 
-    // return NextResponse.json({ Message: "Success", status: 201 });
     return Response.json({ status: 200, message: 'Ok' }, {status: 200})
   } catch (error) {
     console.log(error, '<-- error update user: api/auth/users')

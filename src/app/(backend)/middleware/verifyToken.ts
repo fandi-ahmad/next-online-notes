@@ -12,11 +12,6 @@ const responseForbidden = {
   message: 'Forbidden'
 }
 
-const responOk = {
-  status: '201',
-  message: 'ok'
-}
-
 export default async function verifyToken() {
   const cookieStore = cookies()
   const accessToken = cookieStore.get('access-token')?.value
@@ -24,8 +19,6 @@ export default async function verifyToken() {
   
   const accessTokenEnv: any = process.env.NEXT_PUBLIC_ONLINE_NOTES_ACCESS_TOKEN
   const refreshTokenEnv: any = process.env.NEXT_PUBLIC_ONLINE_NOTES_REFRESH_TOKEN
-
-  console.log({accessToken})
 
   if (!accessToken) {
 
@@ -67,6 +60,7 @@ export default async function verifyToken() {
       status: 200,
       message: 'ok',
       data: {
+        id: userByRefreshToken.id,
         username: userByRefreshToken.username,
         profile_picture: userByRefreshToken.profile_picture
       }
@@ -83,6 +77,7 @@ export default async function verifyToken() {
     status: 200,
     message: 'ok',
     data: {
+      id: userByRefreshToken?.id,
       username: userByRefreshToken?.username,
       profile_picture: userByRefreshToken?.profile_picture
     }
