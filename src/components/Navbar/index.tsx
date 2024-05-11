@@ -2,11 +2,29 @@
 import { MenuItem, Menu } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { LogoutUserApi } from "@/api/authApi";
+import { useEffect, useState } from "react";
+import { LogoutUserApi, CheckUserApi } from "@/api/authApi";
 import { useRouter } from "next/navigation";
+import { useGlobalState } from "@/lib/state";
 
 export default function() {
+  const [currentUsername, setCurrentUsername] = useGlobalState('currentUsername')
+  const [profilePicture, setProfilePicture] = useGlobalState('profilePicture')
+  const [idUser, setIdUser] = useGlobalState('idUser')
+
+  const checkUserLoginData = async () => {
+    const result = await CheckUserApi()
+    if (result.data) {
+      setIdUser(result.data.id)
+      setCurrentUsername(result.data.username)
+      setProfilePicture(result.data.profile_picture)
+    }
+  }
+
+  useEffect(() => {
+    checkUserLoginData()
+  }, [currentUsername])
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   
@@ -20,8 +38,14 @@ export default function() {
   const logout = async () => {
     const response = await LogoutUserApi()
     if (response.status === 200) {
+      handleCloseMenuProfile()
       router.push('/login')
     }
+  }
+
+  const goToProfilePage = () => {
+    handleCloseMenuProfile()
+    router.push('/profile')
   }
 
 
@@ -39,9 +63,9 @@ export default function() {
           onClick={handleClickProfilePicture}
         >
           <Image
-            src='/profile-picture.png'
+            src={profilePicture ? profilePicture : '/images/blank-profile-picture.png'}
             alt="profile-picture"
-            className="rounded-full cursor-pointer"
+            className="rounded-full cursor-pointer w-10 h-10"
             width={48}
             height={48}
             priority
@@ -57,7 +81,8 @@ export default function() {
             'aria-labelledby': 'basic-button',
           }}
         >
-          <MenuItem onClick={handleCloseMenuProfile}>My account</MenuItem>
+          <MenuItem onClick={goToProfilePage}>My Profile</MenuItem>
+          <MenuItem onClick={handleCloseMenuProfile}>Change Password</MenuItem>
           <MenuItem onClick={logout}>Logout</MenuItem>
         </Menu>
       </nav>
