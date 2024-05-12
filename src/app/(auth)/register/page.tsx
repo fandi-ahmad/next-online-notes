@@ -1,6 +1,5 @@
 "use client"
 import BaseInput from "@/components/BaseInput";
-import BaseButton from "@/components/BaseButton";
 import Link from "next/link";
 import AuthLayout from "../layout";
 import { CreateUserApi } from "@/api/userApi";
@@ -9,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { CheckUserApi } from "@/api/authApi";
 import LoadingScreen from "@/components/LoadingScreen";
 import { useGlobalState } from "@/lib/state";
+import { Button } from "@mui/material";
 
 export default function Register() {
   const [username, setUsername] = useState<string>('')
@@ -70,7 +70,9 @@ export default function Register() {
           onChange={(e: { target: { value: SetStateAction<string>; }; }) => setConfirmPassword(e.target.value)}
         />
 
-        <BaseButton onClick={handleRegisterUser} text="Register Now" className="w-full bg-blue-400 text-white hover:text-black" />
+        <Button variant="contained" color="primary" className="w-full capitalize" onClick={handleRegisterUser}>
+          Register Now
+        </Button>
 
         <div className="text-sm flex justify-center mt-2">
           <p>
