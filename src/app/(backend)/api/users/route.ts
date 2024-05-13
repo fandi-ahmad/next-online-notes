@@ -1,7 +1,8 @@
 import prisma from "@/lib/prisma"
 import { genSalt, hash } from "bcrypt"
 import verifyToken from "../../middleware/verifyToken"
-
+import path from "path"
+import { writeFile, unlink } from "fs/promises"
 
 // /api/users
 export async function GET() {
@@ -41,4 +42,57 @@ export async function POST(request: Request) {
     status: 201
   })
 
+}
+
+export async function PUT(req: { formData: () => any }, res: any) {
+  const formData = await req.formData();
+  const id = parseInt(formData.get('id'))
+  const username = formData.get('username')
+  const profile_picture = formData.get("profile_picture");
+
+  try {
+    // ada profile_picture
+    if (profile_picture) {
+      const filename = profile_picture.name.replaceAll(" ", "_");
+      const newFilename = `${Date.now()}_${filename}`;
+      const filePath = path.join(process.cwd(), 'public/profile-picture/', newFilename)
+      const filePathInPublic = '/profile-picture/' + newFilename
+    
+      // Convert the file data to a Buffer
+      const buffer = Buffer.from(await profile_picture.arrayBuffer());
+
+      const userById = await prisma.user.findFirst({
+        where: { id: id }
+      })
+
+      if (userById?.profile_picture) {
+        const existingFilePath = path.join(process.cwd(), 'public/', userById.profile_picture);
+        await unlink(existingFilePath);
+      }
+
+      // save file to directory
+      await writeFile(filePath, buffer)
+      await prisma.user.update({
+        where: { id: id },
+        data: {
+          username: username,
+          profile_picture: filePathInPublic
+        }
+      })
+    
+    // TIDAK ada profile_picture
+    } else {
+      await prisma.user.update({
+        where: { id: id },
+        data: { username: username }
+      })
+    }
+
+    return Response.json({ status: 200, message: 'Ok' }, {status: 200})
+  } catch (error) {
+    console.log(error, '<-- error update user: api/auth/users')
+    return Response.json({ status: 500, message: 'Internal server error' }, {status: 500})
+  } finally {
+    await prisma.$disconnect()
+  } 
 }

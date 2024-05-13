@@ -1,13 +1,13 @@
 "use client"
 import AuthLayout from "../layout";
 import BaseInput from "@/components/BaseInput";
-import BaseButton from "@/components/BaseButton";
 import Link from "next/link";
 import { LoginUserApi, CheckUserApi } from "@/api/authApi";
 import { SetStateAction, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useGlobalState } from "@/lib/state";
 import LoadingScreen from "@/components/LoadingScreen";
+import { Button } from "@mui/material";
 
 export default function Login() {
   const [username, setUsername] = useState<string>('')
@@ -48,19 +48,16 @@ export default function Login() {
         />
 
         <BaseInput 
-          text="Create password"
+          text="Password"
           placeholder="****"
           type="password"
           value={password}
           onChange={(e: { target: { value: SetStateAction<string>; }; }) => setPassword(e.target.value)}
         />
 
-
-        <BaseButton
-          text="Login"
-          className="w-full bg-blue-400 text-white hover:text-black"
-          onClick={handleLogin}
-        />
+        <Button variant="contained" color="primary" className="w-full capitalize" onClick={handleLogin}>
+          Login
+        </Button>
 
         <div className="text-sm flex justify-center mt-2">
           <p>

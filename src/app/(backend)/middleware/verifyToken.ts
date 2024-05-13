@@ -56,6 +56,30 @@ export default async function verifyToken() {
       })
     })
 
+    return {
+      status: 200,
+      message: 'ok',
+      data: {
+        id: userByRefreshToken.id,
+        username: userByRefreshToken.username,
+        profile_picture: userByRefreshToken.profile_picture
+      }
+    }
   }
 
+  const userByRefreshToken = await prisma.user.findFirst({
+    where: {
+      refresh_token: refreshToken,
+    }
+  })
+
+  return {
+    status: 200,
+    message: 'ok',
+    data: {
+      id: userByRefreshToken?.id,
+      username: userByRefreshToken?.username,
+      profile_picture: userByRefreshToken?.profile_picture
+    }
+  }
 }
